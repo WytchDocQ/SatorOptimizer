@@ -1,0 +1,13 @@
+[project]
+name = "sator-os-engine"
+version = "0.1.0"
+description = "Stateless multi-objective optimization server (HTTP/NATS)"
+authors = [{ name = "Your Company" }]
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+sator-server = "sator_os_engine.server.main:run"
+sator-nats = "sator_os_engine.transports.nats:run"
+
+

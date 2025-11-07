@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Environments
+.venv/
+venv/
+env/
+ENV/
+
+# Pyenv
+.python-version
+
+# Packaging metadata
+*.egg-info/
+*.egg
+.eggs/
+build/
+dist/
+
+# IDE/Editor
+.idea/
+# VS Code project files are committed (launch/tasks)
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.*
+!.env.example
+.envrc
+
+# Internal documents
+implementation_notebook.md
+implementationPlan.md
+SATOR_OS_Engine_Architecture_Plan.md
+SATOR_OS_Engine_ProjectFileStructure.md
+temp_doc_study_original_engine.md
+
+# Testing & coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Logs & temp
+logs/
+*.log
+*.tmp
+
+# Example outputs
+examples/responses/
+
+# PEP 582
+__pypackages__/

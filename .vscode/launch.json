@@ -1,0 +1,60 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "SATOR: Run Server",
+            "type": "python",
+            "request": "launch",
+            "module": "sator_os_engine.server.main",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "SATOR: Run NATS Worker",
+            "type": "python",
+            "request": "launch",
+            "module": "sator_os_engine.transports.nats",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "SATOR: Visualize Branin",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/visualize_branin.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "SATOR: Chem PCA Demo",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/chem_pca_optimize_visualize.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "SATOR: HTTP Branin Demo",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/http_visualize_branin.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "SATOR: HTTP Chem PCA Demo",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/http_chem_pca_optimize_visualize.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
+

@@ -1,0 +1,14 @@
+SATOR OS Engine
+Copyright (c) 2025 Sysnoid Technologies Oy and contributors
+
+This repository is created and maintained by Sysnoid Technologies Oy.
+Sysnoid freely gives the source code to the world under the Apache License 2.0
+as a gift. External contributions are welcome and will be reviewed by the
+maintainers. Unless stated otherwise, all contributions are accepted and
+redistributed under the same Apache-2.0 license.
+
+This product includes software developed by the SATOR OS Engine contributors
+and open‑source dependencies whose licenses are compatible with Apache‑2.0
+(e.g., FastAPI, Uvicorn, Pydantic, NumPy, PyTorch/BoTorch/GPyTorch, scikit‑learn,
+Matplotlib, httpx). Please refer to each dependency’s license for details.
+

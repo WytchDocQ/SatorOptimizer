@@ -1,7 +1,7 @@
 <h1 align="center">SATOR Engine</h1>
 <p align="center">
   Statistical Adaptive Tuning and Optimization Runtime </br>
-  >^o,o^<
+  >^o,o^< </br>
   Stateless multi‑objective optimization engine for continuous spaces
 </p>
 <p align="center">

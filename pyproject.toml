@@ -2,7 +2,7 @@
 name = "sator-os-engine"
 version = "0.1.0"
 description = "Stateless multi-objective optimization server (HTTP/NATS)"
-authors = [{ name = "Your Company" }]
+authors = [{ name = "Sysnoid Technologies Oy" }]
 requires-python = ">=3.10"
 dependencies = []
 

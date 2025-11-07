@@ -1,5 +1,6 @@
-<h1 align="center">SATOR OS Engine</h1>
+<h1 align="center">SATOR Optimization Engine</h1>
 <p align="center">
+  Statistical Adaptive Tuning and Optimization Runtime </br>
   Stateless multi‑objective optimization engine for continuous spaces
 </p>
 <p align="center">
@@ -53,7 +54,7 @@ What the system can currently do
 - Any black‑box optimization in continuous domains where sample efficiency matters
 
 ## A quick look
-![Branin GP Surface](tests/artifacts/visual_branin.png)
+![Branin 3D surface — short BO run (minimize)](tests/artifacts/visual_branin_3d.png)
 
 Run it (easiest way)
 - Press F5 in VS Code/Cursor and choose “SATOR: Run Server” (we ship a ready-to-use `.vscode/launch.json`)

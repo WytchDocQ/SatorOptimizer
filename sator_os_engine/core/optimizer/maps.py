@@ -34,10 +34,15 @@ def compute_gp_maps(
     ndim_input = len(cont_idx)
 
     map_dim = None
-    if cfg.map_space == "pca" and (cfg.pca_dimension in (2, 3)):
+    if cfg.map_space == "pca" and (cfg.pca_dimension in (1, 2, 3)):
         map_dim = int(cfg.pca_dimension)
-    elif cfg.map_space == "input" and ndim_input >= 2:
-        map_dim = 3 if (ndim_input >= 3 and cfg.map_resolution and len(cfg.map_resolution) == 3) else 2
+    elif cfg.map_space == "input" and ndim_input >= 1:
+        if ndim_input >= 3 and cfg.map_resolution and len(cfg.map_resolution) == 3:
+            map_dim = 3
+        elif ndim_input >= 2:
+            map_dim = 2
+        else:
+            map_dim = 1
 
     if map_dim is None:
         return None
@@ -45,9 +50,11 @@ def compute_gp_maps(
     if cfg.map_space == "pca":
         if not (use_pca_model and pca is not None and pc_mins is not None and pc_range is not None):
             raise RuntimeError("PCA maps requested but PCA was not used")
-        res = cfg.map_resolution or ([50, 50] if map_dim == 2 else [32, 32, 32])
+        res = cfg.map_resolution or ([50] if map_dim == 1 else ([50, 50] if map_dim == 2 else [32, 32, 32]))
         axes = [np.linspace(0.0, 1.0, res[d]) for d in range(map_dim)]
-        if map_dim == 2:
+        if map_dim == 1:
+            Zgrid = axes[0].reshape(-1, 1)
+        elif map_dim == 2:
             ZZ0, ZZ1 = np.meshgrid(axes[0], axes[1], indexing="xy")
             Zgrid = np.stack([ZZ0.ravel(), ZZ1.ravel()], axis=1)
         else:
@@ -56,12 +63,14 @@ def compute_gp_maps(
         # Model is trained on normalized PCA coordinates (Z in [0,1])
         tXgrid_model = torch.tensor(Zgrid, dtype=tdtype, device=tdevice)
     else:
-        res = cfg.map_resolution or ([50, 50] if map_dim == 2 else [32, 32, 32])
+        res = cfg.map_resolution or ([50] if map_dim == 1 else ([50, 50] if map_dim == 2 else [32, 32, 32]))
         chosen = cont_idx[:map_dim]
         lbs = np.array([float(params[i]["min"]) for i in chosen], dtype=float)
         ubs = np.array([float(params[i]["max"]) for i in chosen], dtype=float)
         axes = [np.linspace(lbs[d], ubs[d], res[d]) for d in range(map_dim)]
-        if map_dim == 2:
+        if map_dim == 1:
+            grid_pts = axes[0].reshape(-1, 1)
+        elif map_dim == 2:
             A0, A1 = np.meshgrid(axes[0], axes[1], indexing="xy")
             grid_pts = np.stack([A0.ravel(), A1.ravel()], axis=1)
         else:

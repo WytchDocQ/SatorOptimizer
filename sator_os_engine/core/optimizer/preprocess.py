@@ -27,7 +27,10 @@ def fit_pca_normalize(X: np.ndarray, k: int):
 
     k = int(k)
     d_in = X.shape[1]
-    k = max(1, min(k, d_in - 1))
+    # Allow using up to the full input dimension. Previously capped at d_in - 1,
+    # which caused a mismatch (e.g., 2D input with requested 2 components fell back to 1),
+    # breaking downstream PCA map generation and GP posterior shapes.
+    k = max(1, min(k, d_in))
     pca = PCA(n_components=k)
     Z_raw = pca.fit_transform(X)
     pc_mins = np.min(Z_raw, axis=0)

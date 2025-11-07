@@ -2,6 +2,8 @@ SATOR OS Engine
 
 SATOR is an open-source, stateless optimization engine for black-box, multi-objective problems. It focuses on practical defaults, clear APIs, and production-friendly behavior without external dependencies.
 
+SATOR was originally built for chemical formulations and material compositions, and generalizes to any optimization problem in continuous spaces. It supports two input classes: (1) compositional “ingredients” that must sum to one (typical for mixtures), and (2) free parameters normalized independently. This lets you combine mixtures and standard continuous variables in a single problem, making SATOR suitable for a wide range of numerical optimization tasks—from industrial process tuning to optimizing parameters for algorithmic trading.
+
 What it is
 - Multi-objective Bayesian optimization server with HTTP API
 - Deterministic, async-capable execution with concurrency controls

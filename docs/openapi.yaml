@@ -1,0 +1,509 @@
+openapi: 3.1.0
+info:
+  title: SATOR OS Engine API
+  version: "0.2.0"
+  description: |
+    Public API contract for the SATOR OS Engine. Asynchronous optimization via /v1/optimize returning a job_id; poll job result via /v1/jobs/{job_id}/result.
+    Security via x-api-key header. Responses can optionally include visualization map descriptors (2D/3D) and PCA encoding diagnostics.
+servers:
+  - url: http://localhost:8000
+    description: Local development
+security:
+  - ApiKeyAuth: []
+paths:
+  /v1/optimize:
+    post:
+      summary: Submit an optimization job
+      operationId: submitOptimize
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OptimizeRequest'
+            examples:
+              basic:
+                value:
+                  dataset:
+                    X: [[0.1, 0.2], [0.7, -0.1]]
+                    Y: [[1.2, 0.5], [0.7, 0.9]]
+                  search_space:
+                    parameters:
+                      - { name: "x1", type: "float", min: 0.0, max: 1.0 }
+                      - { name: "x2", type: "float", min: -1.0, max: 1.0 }
+                  objectives:
+                    o1: { goal: "min" }
+                    o2: { goal: "target", target_value: 0.8 }
+                  optimization_config:
+                    acquisition: qnehvi
+                    batch_size: 4
+                    max_evaluations: 50
+                    seed: 42
+                    use_pca: false
+                    parameter_scaling: none
+                    value_normalization: none
+                    target_tolerance: 0.5
+                    target_variance_penalty: 0.05
+                    sum_constraints: [{ indices: [0], target_sum: 1.0 }]
+                    ratio_constraints: [{ i: 0, j: 1, min_ratio: 0.5, max_ratio: 2.0 }]
+                    return_maps: true
+                    map_space: input
+                    map_resolution: [60, 60]
+      responses:
+        '202':
+          description: Job accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptimizeAccepted'
+              examples:
+                accepted:
+                  value: { job_id: "job_abc123", status: "QUEUED" }
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized (missing/invalid API key)
+  /v1/jobs/{job_id}:
+    get:
+      summary: Get job status
+      operationId: getJob
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Current status of the job
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobStatus'
+  /v1/jobs/{job_id}/result:
+    get:
+      summary: Get job result
+      operationId: getJobResult
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Final result or failure details
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/OptimizeJobResult'
+                  - $ref: '#/components/schemas/JobFailure'
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+  schemas:
+    OptimizeAccepted:
+      type: object
+      additionalProperties: false
+      properties:
+        job_id: { type: string }
+        status:
+          type: string
+          enum: [QUEUED, RUNNING]
+      required: [job_id]
+    JobStatus:
+      type: object
+      additionalProperties: true
+      properties:
+        job_id: { type: string }
+        status:
+          type: string
+          enum: [QUEUED, RUNNING, SUCCEEDED, FAILED]
+        error:
+          type: string
+          description: Present when status=FAILED
+      required: [job_id, status]
+    JobFailure:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [FAILED]
+        error:
+          type: string
+      required: [status, error]
+    OptimizeRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        dataset:
+          $ref: '#/components/schemas/Dataset'
+        search_space:
+          $ref: '#/components/schemas/SearchSpace'
+        objectives:
+          $ref: '#/components/schemas/Objectives'
+        constraints:
+          type: object
+          description: Reserved for future use (constraints are currently specified in optimization_config)
+        optimization_config:
+          $ref: '#/components/schemas/OptimizationConfig'
+      required: [dataset, search_space, objectives, optimization_config]
+    Dataset:
+      type: object
+      additionalProperties: false
+      properties:
+        X:
+          type: array
+          items:
+            type: array
+            items: { type: number }
+        Y:
+          type: array
+          items:
+            type: array
+            items: { type: number }
+      required: [X, Y]
+    SearchSpace:
+      type: object
+      additionalProperties: false
+      properties:
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Parameter'
+      required: [parameters]
+    Parameter:
+      type: object
+      additionalProperties: false
+      properties:
+        name: { type: string }
+        type:
+          type: string
+          enum: [float, int, categorical]
+        min: { type: number }
+        max: { type: number }
+        choices:
+          type: array
+          items:
+            oneOf:
+              - { type: string }
+              - { type: number }
+      required: [name, type]
+      allOf:
+        - if:
+            properties: { type: { const: categorical } }
+          then:
+            required: [choices]
+        - if:
+            properties: { type: { enum: [float, int] } }
+          then:
+            required: [min, max]
+    Objectives:
+      type: object
+      description: Map of objective name to configuration
+      additionalProperties:
+        $ref: '#/components/schemas/ObjectiveConfig'
+      minProperties: 1
+    ObjectiveConfig:
+      type: object
+      additionalProperties: false
+      properties:
+        goal:
+          type: string
+          enum:
+            - min
+            - max
+            - target
+            - minimize_below
+            - maximize_above
+            - maximize_below
+            - minimize_above
+            - within_range
+            - explore
+            - improve
+        target_value:
+          type: number
+          description: Required when goal=target
+        threshold:
+          $ref: '#/components/schemas/Threshold'
+        range:
+          $ref: '#/components/schemas/Range'
+        weights:
+          type: array
+          items: { type: number }
+          description: Optional; used for ParEGO scalarization
+      required: [goal]
+    Threshold:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          enum: ["<=", ">="]
+        value: { type: number }
+        weight:
+          type: number
+          description: Optional weighting on threshold satisfaction
+      required: [type, value]
+    Range:
+      type: object
+      additionalProperties: false
+      properties:
+        min: { type: number }
+        max: { type: number }
+        ideal:
+          type: number
+          description: Optional ideal target inside the range
+        weight:
+          type: number
+          description: Range membership weight
+        ideal_weight:
+          type: number
+          description: Weight on the ideal point closeness
+      required: [min, max]
+    OptimizationConfig:
+      type: object
+      additionalProperties: false
+      properties:
+        acquisition:
+          type: string
+          enum: [qnehvi, qehvi, parego, qei, qpi, qucb]
+        batch_size:
+          type: integer
+          minimum: 1
+          default: 4
+        max_evaluations:
+          type: integer
+          minimum: 1
+          default: 100
+        seed:
+          type: integer
+        use_pca:
+          type: boolean
+          default: false
+        pca_dimension:
+          type: integer
+          description: Required when use_pca=true
+          minimum: 1
+        parameter_scaling:
+          type: string
+          enum: [none, standardize, minmax, null]
+          default: none
+        value_normalization:
+          type: string
+          enum: [none, standardize, minmax, null]
+          default: none
+        target_tolerance:
+          type: number
+        target_variance_penalty:
+          type: number
+        sum_constraints:
+          type: array
+          items: { $ref: '#/components/schemas/SumConstraint' }
+        ratio_constraints:
+          type: array
+          items: { $ref: '#/components/schemas/RatioConstraint' }
+        return_maps:
+          type: boolean
+          default: false
+        map_space:
+          type: string
+          enum: [input, pca]
+          default: input
+        map_resolution:
+          type: array
+          items: { type: integer, minimum: 2 }
+          minItems: 2
+          maxItems: 3
+        gp_config:
+          type: object
+          description: Optional GP hyperparameter hints (lengthscale, outputscale, noise, ard)
+          additionalProperties: true
+        acquisition_params:
+          type: object
+          description: Optional acquisition function parameters (e.g., ucb_beta)
+          additionalProperties: true
+      required: [acquisition, batch_size, max_evaluations, use_pca]
+    SumConstraint:
+      type: object
+      additionalProperties: false
+      properties:
+        indices:
+          type: array
+          items: { type: integer, minimum: 0 }
+          minItems: 1
+        target_sum:
+          type: number
+          default: 1.0
+      required: [indices, target_sum]
+    RatioConstraint:
+      type: object
+      additionalProperties: false
+      properties:
+        i: { type: integer, minimum: 0 }
+        j: { type: integer, minimum: 0 }
+        min_ratio: { type: number }
+        max_ratio: { type: number }
+      required: [i, j]
+    OptimizeJobResult:
+      type: object
+      additionalProperties: false
+      properties:
+        predictions:
+          type: array
+          items: { $ref: '#/components/schemas/Prediction' }
+        pareto:
+          type: object
+          additionalProperties: false
+          properties:
+            indices:
+              type: array
+              items: { type: integer }
+            points:
+              type: array
+              items:
+                type: array
+                items: { type: number }
+          required: [indices, points]
+        encoding_info:
+          $ref: '#/components/schemas/EncodingInfo'
+        diagnostics:
+          $ref: '#/components/schemas/Diagnostics'
+        objectives:
+          $ref: '#/components/schemas/Objectives'
+        encoded_dataset:
+          type: array
+          description: PCA-encoded dataset (if PCA used)
+          items:
+            type: array
+            items: { type: number }
+        gp_maps:
+          $ref: '#/components/schemas/GPMaps'
+      required: [predictions, pareto]
+    Prediction:
+      type: object
+      additionalProperties: false
+      properties:
+        candidate:
+          type: object
+          description: Candidate values mapped back to original variable names
+          additionalProperties:
+            type: number
+        objectives:
+          type: array
+          items: { type: number }
+        variances:
+          type: array
+          items: { type: number }
+        encoded:
+          type: array
+          description: PCA coordinates (if PCA used)
+          items: { type: number }
+        reconstructed:
+          type: object
+          description: Reconstruction (formulation) result when applicable
+          additionalProperties: false
+          properties:
+            ingredients:
+              type: array
+              items: { type: number }
+            parameters:
+              type: array
+              items: { type: number }
+            combined:
+              type: array
+              items: { type: number }
+            success: { type: boolean }
+            final_error: { type: number }
+    EncodingInfo:
+      type: object
+      additionalProperties: false
+      properties:
+        pc_mins:
+          type: array
+          items: { type: number }
+        pc_maxs:
+          type: array
+          items: { type: number }
+        components:
+          type: array
+          items:
+            type: array
+            items: { type: number }
+        mean:
+          type: array
+          items: { type: number }
+    Diagnostics:
+      type: object
+      description: Implementation-defined diagnostics (device, GP details, fit metrics)
+      additionalProperties: true
+      properties:
+        device: { type: string }
+    GPMaps:
+      type: object
+      additionalProperties: false
+      properties:
+        space:
+          type: string
+          enum: [input, pca]
+        dimension:
+          type: integer
+          enum: [2, 3]
+        grid:
+          type: object
+          additionalProperties: false
+          properties:
+            axes:
+              type: array
+              items:
+                type: array
+                items: { type: number }
+            resolution:
+              type: array
+              items: { type: integer, minimum: 2 }
+              minItems: 2
+              maxItems: 3
+          required: [axes, resolution]
+        maps:
+          type: object
+          additionalProperties: false
+          properties:
+            means:
+              type: object
+              additionalProperties:
+                type: array
+                description: 2D or 3D tensor flattened per axis order
+                items:
+                  oneOf:
+                    - type: array
+                      items:
+                        type: array
+                        items: { type: number }
+                    - type: array
+                      items:
+                        type: array
+                        items:
+                          type: array
+                          items: { type: number }
+            variances:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  oneOf:
+                    - type: array
+                      items:
+                        type: array
+                        items: { type: number }
+                    - type: array
+                      items:
+                        type: array
+                        items:
+                          type: array
+                          items: { type: number }
+          required: [means, variances]
+

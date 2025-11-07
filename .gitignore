@@ -58,6 +58,9 @@ logs/
 *.log
 *.tmp
 
+# Local TLS certs (never commit private keys)
+certs/
+
 # Example outputs
 examples/responses/
 

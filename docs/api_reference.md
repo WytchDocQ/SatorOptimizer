@@ -1,5 +1,7 @@
 # API Reference
 
+OpenAPI (machine-readable): see `openapi.yaml` (3.1). Base URL defaults to `http://localhost:8080` (or `https://localhost:8443` when TLS is enabled).
+
 Headers (HTTP)
 - x-api-key: <key>
 - Content-Type: application/json

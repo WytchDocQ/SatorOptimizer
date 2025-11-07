@@ -22,6 +22,12 @@ class Settings(BaseSettings):
     enable_http: bool = Field(True, alias="SATOR_ENABLE_HTTP")
     http_host: str = Field("0.0.0.0", alias="SATOR_HTTP_HOST")
     http_port: int = Field(8080, alias="SATOR_HTTP_PORT")
+    # TLS (HTTPS)
+    enable_tls: bool = Field(False, alias="SATOR_ENABLE_TLS")
+    tls_cert_file: Optional[str] = Field(default=None, alias="SATOR_TLS_CERT_FILE")
+    tls_key_file: Optional[str] = Field(default=None, alias="SATOR_TLS_KEY_FILE")
+    tls_key_password: Optional[str] = Field(default=None, alias="SATOR_TLS_KEY_PASSWORD")
+    tls_ca_certs: Optional[str] = Field(default=None, alias="SATOR_TLS_CA_CERTS")
     enable_nats: bool = Field(False, alias="SATOR_ENABLE_NATS")
     nats_url: str = Field("nats://localhost:4222", alias="SATOR_NATS_URL")
 

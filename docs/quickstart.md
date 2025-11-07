@@ -7,6 +7,7 @@
 2. Run HTTP
    - Press F5 and choose "SATOR: Run Server" (recommended), or
    - Set your key in `.env` as `SATOR_API_KEY=dev-key`, then run `sator-server`
+   - For HTTPS (TLS) locally, see `local_tls_certs.md` and ensure TLS vars are set in `.env`.
 
 3. Optimize
    - POST /v1/optimize with JSON body including dataset, objectives, search_space and optimization_config

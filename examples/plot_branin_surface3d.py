@@ -117,9 +117,9 @@ def main() -> str:
 		X[:n_init, 1],
 		Y[:n_init, 0] + z_eps,
 		s=36,
-		c="#ffffff",
+		c="#1f77b4",
 		marker="o",
-		edgecolors="#222222",
+		edgecolors="#0b2e59",
 		linewidths=0.7,
 		alpha=1.0,
 		depthshade=False,
@@ -131,12 +131,12 @@ def main() -> str:
 		[P[0, 1]],
 		[Yp[0, 0] + 3 * z_eps],
 		s=160,
-		c="#ffd400",
+		c="#d62728",
 		marker="*",
-		edgecolors="#222222",
+		edgecolors="#7f1f1f",
 		linewidths=0.8,
 		depthshade=False,
-		label="suggested",
+		label="prediction",
 	)
 	# No incumbent path and no annotation box
 

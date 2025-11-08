@@ -39,6 +39,8 @@ implementationPlan.md
 SATOR_OS_Engine_Architecture_Plan.md
 SATOR_OS_Engine_ProjectFileStructure.md
 temp_doc_study_original_engine.md
+tests\unit\plan_to_implement_comprehensive_tests.md
+plan_to_implement_comprehensive_tests.md
 
 # Testing & coverage
 .pytest_cache/

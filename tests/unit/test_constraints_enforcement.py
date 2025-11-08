@@ -1,3 +1,11 @@
+"""Unit tests for sum-to-target candidate enforcement.
+
+This test feeds a simple 3-variable dataset and requests a single-objective
+minimization while specifying a sum constraint on two variables. It asserts that
+all returned candidate suggestions satisfy the target sum within a small
+tolerance. This validates the enforcement logic applied after acquisition.
+"""
+
 from __future__ import annotations
 
 import numpy as np

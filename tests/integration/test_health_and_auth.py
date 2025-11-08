@@ -1,3 +1,12 @@
+"""Integration tests for health checks and authentication.
+
+This module verifies:
+- Health endpoints `/livez` and `/readyz` respond with expected JSON payloads.
+- Requests without `x-api-key` to protected endpoints are rejected (401/403).
+
+The FastAPI app is instantiated in-memory with a configured API key.
+"""
+
 from __future__ import annotations
 
 import os

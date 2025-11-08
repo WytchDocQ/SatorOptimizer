@@ -12,14 +12,7 @@
   - If needed: `pip install pytest`
 
 ## Run all tests
-- Start the server first if you plan to run any HTTP/system tests
-  - Windows PowerShell:
-    - `.\venv\Scripts\Activate.ps1`
-    - `$env:SATOR_API_KEY = "dev-key"`
-    - Start one of:
-      - `python -m sator_os_engine.server.main`
-      - `uvicorn sator_os_engine.server.main:app --host 0.0.0.0 --port 8080`
-      - `sator-server`
+- No server required. Unit and integration tests in this repo use an in-process TestClient.
 - Terminal:
   - `pytest -q`
 - VS Code / Cursor:
@@ -39,7 +32,4 @@
 - `-x` stop after first failure
 
 ## Environment
-- For server-backed tests, set the API key and (optionally) base URL:
-  - `$env:SATOR_API_KEY = "dev-key"`
-  - `$env:SATOR_BASE_URL = "http://localhost:8080"` (default if unset)
-- Unit tests that use in-process TestClient do not require the server.
+- None required for this test suite. Unit and integration tests run in-process; no server, ports, or TLS setup needed.

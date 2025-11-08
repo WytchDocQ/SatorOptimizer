@@ -1,3 +1,14 @@
+"""Integration tests for async API flows.
+
+These tests spin up the FastAPI app in-memory and exercise:
+- /v1/optimize: submit an asynchronous optimization job and poll until results
+  are available; verify predictions are returned.
+- /v1/reconstruct: submit a reconstruction job and poll until success; verify
+  a reconstructed formulation is returned.
+
+Authentication via x-api-key is included to mirror real usage.
+"""
+
 from __future__ import annotations
 
 import os

@@ -41,7 +41,7 @@ def select_candidates_single_objective(
         post = model.models[0].posterior(Zgrid)
     else:
         post = model.models[0].posterior(grid)
-    mu = (-post.mean).detach().cpu().numpy().ravel()
+    mu = post.mean.detach().cpu().numpy().ravel()
     var = post.variance.detach().cpu().numpy().ravel()
 
     obj_cfgs = list(req.objectives.values()) if isinstance(req.objectives, dict) else []
@@ -179,7 +179,7 @@ def select_candidates_multiobjective(
         posts = [m.posterior(Zgrid) for m in model.models]
     else:
         posts = [m.posterior(grid) for m in model.models]
-    mu_list = [(-p.mean).detach().cpu().numpy().ravel() for p in posts]
+    mu_list = [p.mean.detach().cpu().numpy().ravel() for p in posts]
     var_list = [p.variance.detach().cpu().numpy().ravel() for p in posts]
     score = np.zeros(raw_n)
     obj_cfgs = list(req.objectives.values()) if isinstance(req.objectives, dict) else []

@@ -1,3 +1,16 @@
+"""End-to-end multi-objective optimization with PCA maps.
+
+This test constructs a tiny 2D synthetic dataset with two objectives and
+invokes `run_optimization` using qNEHVI and PCA (map_space="pca").
+It asserts that:
+- The number of predictions equals the requested batch size.
+- Each prediction contains variances.
+- GP maps are returned, have dimension 2, and include means/variances for all objectives.
+
+This focuses on the PCA path and map generation shape consistency rather than
+numerical optimality.
+"""
+
 from __future__ import annotations
 
 import numpy as np

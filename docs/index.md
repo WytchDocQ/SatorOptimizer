@@ -11,6 +11,8 @@ Welcome. This documentation covers how to run the engine, call the API, understa
   - `openapi.yaml` — OpenAPI 3.1 source of truth (machine-readable)
 - Objectives and constraints
   - `objectives.md` — goal types, thresholds/ranges, exploration, constraints
+- Optimization pipeline
+  - `optimization_pipeline.md` — end-to-end flow: preprocessing, GP fitting, acquisition, constraints, maps, reconstruction
 - Operations
   - `operations.md` — environment config, logging, health, TLS, reverse proxy
   - `local_tls_certs.md` — mkcert setup and running HTTPS locally

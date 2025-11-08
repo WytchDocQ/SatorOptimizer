@@ -7,6 +7,14 @@
   - `python -m sator_os_engine.server.main`
 - If your server runs elsewhere, set `SATOR_BASE_URL` accordingly (default is `http://localhost:8080`).
 
+### HTTPS (TLS) option
+- For Excel add-ins or environments that require HTTPS:
+  - Ensure local dev certs exist (see `docs/local_tls_certs.md`) under `certs/` (e.g., `certs/localhost.pem`, `certs/localhost-key.pem`). After installing `mkcert`, restart PowerShell before using it.
+  - In `.env`, set `SATOR_ENABLE_TLS=true` and choose a port, conventionally `SATOR_HTTP_PORT=8443`. Keep only one `SATOR_HTTP_PORT` entry.
+  - Start the server as usual (`sator-server` or `python -m sator_os_engine.server.main`); it will bind HTTPS.
+  - Set the client base URL to HTTPS: `$env:SATOR_BASE_URL = "https://localhost:8443"`.
+  - Port conventions: use 8080 for HTTP (TLS disabled), 8443 for HTTPS (TLS enabled).
+
 ## 2) Install plotting deps (first time only)
 - `pip install matplotlib scikit-learn httpx`
 
@@ -18,7 +26,7 @@
 
 ## 4) Configuration
 - API key: `SATOR_API_KEY` (defaults to `dev-key`)
-- Server address: `SATOR_BASE_URL` (defaults to `http://localhost:8080`)
+- Server address: `SATOR_BASE_URL` (defaults to `http://localhost:8080`; use `https://localhost:8443` for TLS)
 
 If you see HTTP 401/403, check the API key. If you see 422, print the server error by temporarily adding `print(r.text)` before raising in the script to view validation details.
 

@@ -1,3 +1,16 @@
+"""System test generating a Branin surface visualization artifact.
+
+This test requires matplotlib (skipped if unavailable). It:
+- Builds a small training set for the Branin function.
+- Runs the optimizer to get a batch of predictions.
+- Renders a contour plot of the ground-truth surface with training points and
+  predicted candidates, saving the figure under tests/artifacts/.
+
+It asserts that an image file is written and is non-trivial in size. The goal
+is to validate the end-to-end coupling of optimization output with a simple
+visualization flow, not to assess numerical optimality.
+"""
+
 from __future__ import annotations
 
 import os

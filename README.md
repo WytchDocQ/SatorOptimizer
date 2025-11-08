@@ -34,7 +34,7 @@ SATOR was originally built for chemical formulations and material compositions, 
   - 1D → curve map
   - 2D → surface map
   - 3D → volumetric map
-  - >3D → no plot
+  - 4D+ → no plot
 - High-precision SLSQP reconstruction back to the original variables (sum-to-one respected)
 - No database, no UI – simple to deploy and operate
 

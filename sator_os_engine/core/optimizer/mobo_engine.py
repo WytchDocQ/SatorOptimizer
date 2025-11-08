@@ -118,7 +118,7 @@ def run_optimization(req: OptimizeRequest, device: str = "cpu") -> Dict[str, Any
             else:
                 goals = [str(cfg.get("goal", "min")).lower() for cfg in (list(req.objectives.values()) if isinstance(req.objectives, dict) else [])]
                 cand = select_candidates_multiobjective(
-                    model=model,
+                        model=model,
                     params=params,
                     bounds_input=bounds_input,
                     bounds_model=bounds_model,
@@ -133,7 +133,7 @@ def run_optimization(req: OptimizeRequest, device: str = "cpu") -> Dict[str, Any
                     req=req,
                     goals=goals,
                     Y_np=Y_np,
-                )
+                    )
                 
 
             # Predict means for candidates (convert back to minimization by negating)

@@ -39,6 +39,12 @@
   - Access: `https://localhost:8443`
   - Local cert setup guide: see `local_tls_certs.md`
 
+### Port conventions
+
+- Use `SATOR_HTTP_PORT=8080` when serving plain HTTP (`SATOR_ENABLE_TLS=false`).
+- Use `SATOR_HTTP_PORT=8443` when serving HTTPS (`SATOR_ENABLE_TLS=true`).
+- Keep a single `SATOR_HTTP_PORT` entry in `.env` to avoid ambiguity; choose the one matching your TLS setting.
+
 - Dev certificates (Windows/macOS/Linux):
   - Recommended: `mkcert` to create a locally trusted cert.
     - Install mkcert and trust local CA:

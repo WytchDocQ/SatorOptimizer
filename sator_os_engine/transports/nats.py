@@ -47,7 +47,7 @@ async def run_nats(settings: Settings, store: Optional[JobStore] = None) -> None
         if not provided:
             return None
         if settings.api_key and _const_eq(provided, settings.api_key):
-            return provided
+                return provided
         return None
 
     async def on_optimize(msg):  # noqa: ANN001
